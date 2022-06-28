@@ -11,8 +11,7 @@ Alchemy::Page.class_eval do
   ]
 
   def self.full_text_search(query)
-    page_ids = PgSearch.multisearch(query).where(searchable_type: "Alchemy::Page").map { |document| document.searchable_id }
-    Alchemy::Page.find_by_id(page_ids)
+    PgSearch.multisearch(query).where(searchable_type: "Alchemy::Page").map { |document| document.searchable }
   end
 end
 
