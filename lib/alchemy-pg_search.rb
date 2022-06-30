@@ -1,5 +1,6 @@
 require "alchemy/pg_search/engine"
 require "alchemy/pg_search/config"
+require "alchemy/pg_search/search"
 require "alchemy/pg_search/page_search_scope"
 
 module Alchemy
@@ -18,6 +19,14 @@ module Alchemy
 
     def self.searchable_essence_classes
       SEARCHABLE_ESSENCES.map { |k| "Alchemy::#{k.classify}".constantize }
+    end
+    
+    def self.search_pages(query)
+      Search.search_pages query
+    end
+
+    def self.index_alchemy
+      Search.index_alchemy
     end
   end
 end
