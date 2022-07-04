@@ -1,6 +1,7 @@
 require "alchemy/pg_search/engine"
 require "alchemy/pg_search/config"
 require "alchemy/pg_search/search"
+require "alchemy/pg_search/page_result"
 require "alchemy/pg_search/page_search_scope"
 
 module Alchemy
