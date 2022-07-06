@@ -19,6 +19,8 @@ module Alchemy
         raw_search(query).each do |document|
           page = document.searchable_type == "Alchemy::Page" ? document.searchable : document.searchable.page
 
+          next unless page
+
           results[page.id] = PageResult.new(page) unless results.has_key? page.id
           results[page.id].add_relative_document document
         end
@@ -27,12 +29,12 @@ module Alchemy
       end
 
       private
-      
+
       ##
       # @param query [string]
       # @return [array<::PgSearch::Document>]
       def self.raw_search(query)
-        ::PgSearch.multisearch(query).includes(:searchable)
+        ::PgSearch.multisearch(query).includes(searchable: {all_elements: {contents: :essence}})
       end
     end
   end

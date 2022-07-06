@@ -49,8 +49,7 @@ module Alchemy
       # @return [Array]
       #
       def search_results
-        pages = Alchemy::PgSearch.config[:page_search_scope].pages
-        pages.accessible_by(current_ability).includes(all_elements: { contents: :essence }).full_text_search(params[:query])
+        Alchemy::PgSearch.search_pages params[:query]
       end
 
       # A view helper that loads the search result page.

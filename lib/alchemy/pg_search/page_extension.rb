@@ -7,5 +7,5 @@ Alchemy::Page.class_eval do
     :meta_description,
     :meta_keywords,
     :name,
-  ]
+  ], if: lambda { |page| page.public? }
 end
