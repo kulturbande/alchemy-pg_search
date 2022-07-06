@@ -23,6 +23,10 @@ module Alchemy::PgSearch::ContentExtension
       end
     end
 
+    def searchable?
+      searchable && element.searchable?
+    end
+
     Alchemy::Content.prepend self
   end
 end
