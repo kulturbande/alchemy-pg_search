@@ -31,5 +31,13 @@ describe Alchemy::EssenceText do
         expect(essence_text.searchable?).to be(false)
       end
     end
+
+    context "essence_text has no content" do
+      let(:essence_text) { create(:alchemy_essence_text) }
+
+      it "should be not searchable" do
+        expect(essence_text.searchable?).to be(false)
+      end
+    end
   end
 end

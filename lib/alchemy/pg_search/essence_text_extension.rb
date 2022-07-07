@@ -6,6 +6,6 @@ Alchemy::EssenceText.class_eval do
   ], if: :searchable?
 
   def searchable?
-    body.present? && content.searchable?
+    body.present? && !!content&.searchable?
   end
 end
