@@ -59,3 +59,8 @@
     - name: with_searchable_disabled
       type: EssenceText
       searchable: false
+
+- name: essence_test
+  contents:
+    - name: essence_text
+      type: EssenceText

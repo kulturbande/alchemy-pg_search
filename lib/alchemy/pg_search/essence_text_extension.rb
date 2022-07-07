@@ -3,5 +3,9 @@ Alchemy::EssenceText.class_eval do
 
   multisearchable against: [
     :body
-  ], if: lambda { |record| record.page.public? && !record.page.restricted? && record.element&.public? && record.body.present? }
+  ], if: :searchable?
+
+  def searchable?
+    body.present? && content.searchable?
+  end
 end
