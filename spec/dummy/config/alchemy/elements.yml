@@ -64,3 +64,5 @@
   contents:
     - name: essence_text
       type: EssenceText
+    - name: essence_richtext
+      type: EssenceRichtext

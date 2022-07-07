@@ -5,7 +5,7 @@ module Alchemy
       ##
       # index all supported Alchemy models
       def self.index_alchemy
-        [Alchemy::Page, Alchemy::EssenceText].each { |model| ::PgSearch::Multisearch.rebuild(model) }
+        [Alchemy::Page, Alchemy::EssenceText, Alchemy::EssenceRichtext].each { |model| ::PgSearch::Multisearch.rebuild(model) }
       end
 
       ##
@@ -34,7 +34,7 @@ module Alchemy
       # @param query [string]
       # @return [array<::PgSearch::Document>]
       def self.raw_search(query)
-        ::PgSearch.multisearch(query).includes(searchable: {all_elements: {contents: :essence}})
+        ::PgSearch.multisearch(query).includes(searchable: { all_elements: { contents: :essence } })
       end
     end
   end

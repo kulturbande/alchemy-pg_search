@@ -32,7 +32,7 @@ describe Alchemy::EssenceText do
       end
     end
 
-    context "essence_text has no content" do
+    context "essence_text has no related content" do
       let(:essence_text) { create(:alchemy_essence_text) }
 
       it "should be not searchable" do

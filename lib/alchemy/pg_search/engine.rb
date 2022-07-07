@@ -11,6 +11,7 @@ module Alchemy
         require_relative "./controller_methods"
         require_relative "./element_extension"
         require_relative "./essence_text_extension"
+        require_relative "./essence_richtext_extension"
         require_relative "./page_extension"
 
         # We need to have the search methods present in all Alchemy controllers
