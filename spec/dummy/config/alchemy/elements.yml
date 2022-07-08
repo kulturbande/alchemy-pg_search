@@ -66,3 +66,5 @@
       type: EssenceText
     - name: essence_richtext
       type: EssenceRichtext
+    - name: essence_picture
+      type: EssencePicture
