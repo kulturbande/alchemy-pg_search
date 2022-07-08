@@ -17,6 +17,13 @@ module Alchemy
       def add_relative_document(pg_document)
         @relative_documents.push pg_document
       end
+
+      ##
+      # content of the first document
+      # @return [String, nil]
+      def first_excerpt
+        relative_documents.first&.content
+      end
     end
   end
 end
