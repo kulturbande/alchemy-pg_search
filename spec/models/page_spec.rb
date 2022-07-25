@@ -27,5 +27,13 @@ RSpec.describe Alchemy::Page do
         expect(page.searchable?).to be(false)
       end
     end
+
+    describe "layout page" do
+      let(:page) { create(:alchemy_page, :public, :layoutpage) }
+
+      it 'should not be searchable' do
+        expect(page.searchable?).to be(false)
+      end
+    end
   end
 end

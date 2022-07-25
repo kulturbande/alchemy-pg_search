@@ -1,5 +1,7 @@
 module Alchemy
   module PgSearch
+    ##
+    # @deprecated
     class PageResult
       attr_reader :page
       attr_accessor :relative_documents

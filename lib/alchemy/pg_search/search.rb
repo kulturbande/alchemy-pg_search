@@ -11,10 +11,19 @@ module Alchemy
       end
 
       ##
+      # search for page results
+      #
+      # @param query [string]
+      def self.search(query)
+        ::PgSearch.multisearch(query).select("JSON_AGG(content) as content", :page_id).reorder("").group(:page_id).joins(:page)
+      end
+
+      ##
       # search for pages with the given query
       #
       # @param query [string] the search string
       # @return [array<PageResult>] found page results
+      # @deprecated
       def self.search_pages(query)
         results = {}
 
@@ -35,6 +44,7 @@ module Alchemy
       ##
       # @param query [string]
       # @return [array<::PgSearch::Document>]
+      # @deprecated
       def self.raw_search(query)
         ::PgSearch.multisearch(query).includes(searchable: { all_elements: { contents: :essence } })
       end

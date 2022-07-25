@@ -49,12 +49,12 @@ module Alchemy
       # @return [Array]
       #
       def search_results
-        Alchemy::PgSearch.search_pages params[:query]
+        Alchemy::PgSearch.search params[:query]
       end
 
       # A view helper that loads the search result page.
       #
-      # @return [Alchemy::Page]
+      # @return [Alchemy::Page,nil]
       #
       def search_result_page
         @search_result_page ||= begin

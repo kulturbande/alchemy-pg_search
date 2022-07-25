@@ -22,8 +22,8 @@ module Alchemy
       SEARCHABLE_ESSENCES.map { |k| "Alchemy::#{k.classify}".constantize }
     end
     
-    def self.search_pages(query)
-      Search.search_pages query
+    def self.search(query)
+      Search.search query
     end
 
     def self.index_alchemy
