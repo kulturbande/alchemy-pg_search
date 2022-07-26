@@ -11,6 +11,17 @@ module Alchemy
       end
 
       ##
+      # index a single page and indexable essences
+      #
+      # @param page [Alchemy::Page]
+      def self.index_page(page)
+        page.update_pg_search_document
+        page.contents.all.each do |content|
+          content.essence.update_pg_search_document if Alchemy::PgSearch.is_searchable_essence? content.essence_type.sub("Alchemy::", "")
+        end
+      end
+
+      ##
       # search for page results
       #
       # @param query [string]
