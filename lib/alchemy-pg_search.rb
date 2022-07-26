@@ -26,8 +26,8 @@ module Alchemy
       Search.search query
     end
 
-    def self.index_alchemy
-      Search.index_alchemy
+    def self.rebuild
+      Search.rebuild
     end
   end
 end
