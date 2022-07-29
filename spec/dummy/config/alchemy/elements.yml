@@ -68,3 +68,5 @@
       type: EssenceRichtext
     - name: essence_picture
       type: EssencePicture
+  nestable_elements:
+    - article

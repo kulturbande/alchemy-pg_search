@@ -54,19 +54,24 @@ RSpec.describe "Fulltext search" do
     end
 
     it "does not display results placed on global pages" do
-      public_page.update!(layoutpage_version: true.public_version)
+      public_page.update!(layoutpage: true)
       visit("/suche?query=search")
       expect(page).to have_css("h2.no_search_results")
     end
 
     it "does not display results placed on unpublished pages" do
-      public_page.update!(public_on: nil)
+      #public_page.update!(public_on: nil)
+      public_page.public_on = nil
+      # Alchemy::PgSearch.rebuild
       visit("/suche?query=search")
       expect(page).to have_css("h2.no_search_results")
     end
 
     describe "content from restricted pages" do
-      before { public_page.update!(restricted: true) }
+      before do
+        public_page.update!(restricted: true)
+        # Alchemy::PgSearch.rebuild
+      end
 
       it "does not display any result" do
         visit("/suche?query=search")
@@ -95,7 +100,7 @@ RSpec.describe "Fulltext search" do
       let(:english_language) { create(:alchemy_language, :english) }
       let(:english_language_root) { create(:alchemy_page, :language_root, language: english_language, name: "Home") }
       let(:english_page) { create(:alchemy_page, :public, parent_id: english_language_root.id, language: english_language) }
-      let!(:english_element) { create(:alchemy_element, :with_contents, page_id: english_page.id, name: "article") }
+      let!(:english_element) { create(:alchemy_element, :with_contents, page: english_page, name: "article") }
 
       before do
         element

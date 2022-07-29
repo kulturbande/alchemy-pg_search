@@ -15,9 +15,15 @@ module Alchemy
       #
       # @param page [Alchemy::Page]
       def self.index_page(page)
+        # remove the whole index for the page
+        ::PgSearch::Document.delete_by(page_id: page.id)
+
+        # and rebuild it again
         page.update_pg_search_document
-        page.contents.all.each do |content|
-          content.essence.update_pg_search_document if Alchemy::PgSearch.is_searchable_essence? content.essence_type.sub("Alchemy::", "")
+        page.all_elements.each do |element|
+          element.contents.each do |content|
+            content.essence.update_pg_search_document if Alchemy::PgSearch.is_searchable_essence? content.essence_type.sub("Alchemy::", "")
+          end
         end
       end
 

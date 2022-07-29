@@ -4,7 +4,7 @@ describe Alchemy::PgSearch::Search do
   let(:page_version) { create(:alchemy_page_version, :published) }
   let(:element) { create(:alchemy_element, :with_contents, name: "essence_test", public: true, page_version: page_version) }
   let(:prepared_essences) do
-    {:essence_text => :body, :essence_richtext => :body, :essence_picture => :caption}.each do |essence_name, field|
+    { :essence_text => :body, :essence_richtext => :body, :essence_picture => :caption }.each do |essence_name, field|
       essence = element.content_by_name(essence_name).essence
       essence[field] = "foo"
       essence.save
@@ -41,20 +41,21 @@ describe Alchemy::PgSearch::Search do
   end
 
   context 'index_page' do
+    let(:first_page) { Alchemy::Page.first }
+    let(:second_page) { Alchemy::Page.last }
+
     before do
       prepared_essences
       PgSearch::Document.destroy_all # clean the whole index
     end
-    
+
     it 'should have zero indexed documents' do
       expect(PgSearch::Document.count).to be(0)
     end
 
     context 'first_page' do
-      let(:page) { Alchemy::Page.first }
-
       before do
-        Alchemy::PgSearch::Search.index_page page
+        Alchemy::PgSearch::Search.index_page first_page
       end
 
       it 'should have only one entry' do
@@ -62,15 +63,13 @@ describe Alchemy::PgSearch::Search do
       end
 
       it 'should be the first page' do
-        expect(PgSearch::Document.first.page_id).to be(page.id)
+        expect(PgSearch::Document.first.page_id).to be(first_page.id)
       end
     end
 
     context 'second_page' do
-      let(:page) { Alchemy::Page.last }
-
       before do
-        Alchemy::PgSearch::Search.index_page page
+        Alchemy::PgSearch::Search.index_page second_page
       end
 
       it 'should have four entries (1 Page + 3 Essences)' do
@@ -79,7 +78,28 @@ describe Alchemy::PgSearch::Search do
 
       it 'should be all relate to the same page ' do
         PgSearch::Document.all.each do |document|
-          expect(document.page_id).to be(page.id)
+          expect(document.page_id).to be(second_page.id)
+        end
+      end
+    end
+
+    context 'nested elements' do
+      let(:nested_element) { create(:alchemy_element, :with_contents, name: "article", public: true, page_version: page_version, parent_element: element) }
+
+      before do
+        nested_element
+        Alchemy::PgSearch::Search.index_page second_page
+      end
+
+      it 'should have 6 documents' do
+        # 1 Page + 3 previous essences + 2 new article essences
+        # the picture essence is empty and not in the search index
+        expect(PgSearch::Document.count).to be(6)
+      end
+
+      it 'should be all relate to the same page ' do
+        PgSearch::Document.all.each do |document|
+          expect(document.page_id).to be(second_page.id)
         end
       end
     end
