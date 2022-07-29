@@ -3,6 +3,8 @@
 Alchemy::Page.class_eval do
   include PgSearch::Model
 
+  after_save :remove_unpublished_pages
+
   multisearchable(
     against: [
       :meta_description,
@@ -13,7 +15,11 @@ Alchemy::Page.class_eval do
     if: :searchable?
   )
 
+  def remove_unpublished_pages
+    Alchemy::PgSearch::Search.remove_page self unless searchable?
+  end
+
   def searchable?
-    public? && !restricted? && !layoutpage?
+    public? && !layoutpage?
   end
 end

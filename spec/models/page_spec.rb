@@ -20,14 +20,6 @@ RSpec.describe Alchemy::Page do
       end
     end
 
-    describe "restricted page" do
-      let(:page) { create(:alchemy_page, :public, :restricted) }
-
-      it 'should not be searchable' do
-        expect(page.searchable?).to be(false)
-      end
-    end
-
     describe "layout page" do
       let(:page) { create(:alchemy_page, :public, :layoutpage) }
 

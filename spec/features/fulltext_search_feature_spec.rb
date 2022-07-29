@@ -54,14 +54,16 @@ RSpec.describe "Fulltext search" do
     end
 
     it "does not display results placed on global pages" do
+      # A layout page is configured and the page is indexed after publish
       public_page.update!(layoutpage: true)
+      Alchemy::PgSearch::Search.index_page public_page
+
       visit("/suche?query=search")
       expect(page).to have_css("h2.no_search_results")
     end
 
     it "does not display results placed on unpublished pages" do
       public_page.update!(public_on: nil)
-      # Alchemy::PgSearch.rebuild
       visit("/suche?query=search")
       expect(page).to have_css("h2.no_search_results")
     end
@@ -69,7 +71,6 @@ RSpec.describe "Fulltext search" do
     describe "content from restricted pages" do
       before do
         public_page.update!(restricted: true)
-        # Alchemy::PgSearch.rebuild
       end
 
       it "does not display any result" do

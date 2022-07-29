@@ -11,14 +11,20 @@ module Alchemy
       end
 
       ##
+      # remove the whole index for the page
+      #
+      # @param page [Alchemy::Page]
+      def self.remove_page(page)
+        ::PgSearch::Document.delete_by(page_id: page.id)
+      end
+
+      ##
       # index a single page and indexable essences
       #
       # @param page [Alchemy::Page]
       def self.index_page(page)
-        # remove the whole index for the page
-        ::PgSearch::Document.delete_by(page_id: page.id)
+        remove_page page
 
-        # and rebuild it again
         page.update_pg_search_document
         page.all_elements.includes(contents: :essence).each do |element|
           element.contents.each do |content|
@@ -31,8 +37,16 @@ module Alchemy
       # search for page results
       #
       # @param query [string]
-      def self.search(query)
-        ::PgSearch.multisearch(query).select("JSON_AGG(content) as content", :page_id).reorder("").group(:page_id).joins(:page)
+      def self.search(query, ability: nil)
+        query = ::PgSearch.multisearch(query)
+                  .select("JSON_AGG(content) as content", :page_id)
+                  .reorder("")
+                  .group(:page_id)
+                  .joins(:page)
+
+        query = query.merge(Alchemy::Page.accessible_by(ability, :read)) if ability
+
+        query
       end
 
       ##

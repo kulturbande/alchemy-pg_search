@@ -22,8 +22,8 @@ module Alchemy
       SEARCHABLE_ESSENCES.map { |k| "Alchemy::#{k.classify}".constantize }
     end
     
-    def self.search(query)
-      Search.search query
+    def self.search(query, ability: nil)
+      Search.search query, ability: ability
     end
 
     def self.rebuild
