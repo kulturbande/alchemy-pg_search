@@ -1,7 +1,6 @@
 Alchemy::Element.class_eval do
-  include PgSearch::Model
 
   def searchable?
-    public? && page.searchable?
+    public? && page.searchable? && page_version.public?
   end
 end

@@ -10,6 +10,8 @@ module Alchemy::PgSearch::ContentExtension
   end
 
   module InstanceMethods
+    ##
+    # @deprecated
     def searchable_ingredient
       case essence_type
       when "Alchemy::EssencePicture"

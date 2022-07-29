@@ -23,6 +23,17 @@ RSpec.describe Alchemy::Element do
       end
     end
 
+    describe "public element and not published page_version" do
+      let(:searchable_element) do
+        page_version = create(:alchemy_page_version)
+        create(:alchemy_element, page_version: page_version)
+      end
+
+      it 'should not be searchable' do
+        expect(searchable_element.searchable?).to be(false)
+      end
+    end
+
     describe "not public element" do
       it 'should not be searchable' do
         searchable_element.public = false

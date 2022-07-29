@@ -60,8 +60,7 @@ RSpec.describe "Fulltext search" do
     end
 
     it "does not display results placed on unpublished pages" do
-      #public_page.update!(public_on: nil)
-      public_page.public_on = nil
+      public_page.update!(public_on: nil)
       # Alchemy::PgSearch.rebuild
       visit("/suche?query=search")
       expect(page).to have_css("h2.no_search_results")
