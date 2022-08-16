@@ -10,21 +10,6 @@ module Alchemy::PgSearch::ContentExtension
   end
 
   module InstanceMethods
-    ##
-    # @deprecated
-    def searchable_ingredient
-      case essence_type
-      when "Alchemy::EssencePicture"
-        essence.caption
-      when "Alchemy::EssenceRichtext"
-        essence.stripped_body
-      when "Alchemy::EssenceText"
-        essence.body
-      else
-        ingredient
-      end
-    end
-
     def searchable?
       searchable && element.searchable?
     end
