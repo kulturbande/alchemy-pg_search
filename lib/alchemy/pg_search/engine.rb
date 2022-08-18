@@ -7,14 +7,9 @@ module Alchemy
       engine_name "alchemy_pg_search"
 
       config.to_prepare do
-        require_relative "./content_extension"
-        require_relative "./controller_methods"
-        require_relative "./element_extension"
-        require_relative "./essence_text_extension"
-        require_relative "./essence_richtext_extension"
-        require_relative "./essence_picture_extension"
-        require_relative "./pg_search_document_extension"
-        require_relative "./page_extension"
+        Dir.glob(Alchemy::PgSearch::Engine.root.join("app", "extensions", "*_extension.rb")) do |c|
+          require_dependency(c)
+        end
 
         # We need to have the search methods present in all Alchemy controllers
         Alchemy::BaseController.send(:include, Alchemy::PgSearch::ControllerMethods)
