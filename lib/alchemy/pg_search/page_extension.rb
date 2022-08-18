@@ -3,7 +3,7 @@
 module Alchemy::PgSearch::PageExtension
   def self.prepended(base)
     base.include PgSearch::Model
-    base.after_save :remove_unpublished_pages # TODO: test after save
+    base.after_save :remove_unpublished_page
     base.multisearchable(
       against: [
         :meta_description,
@@ -15,12 +15,14 @@ module Alchemy::PgSearch::PageExtension
     )
   end
 
-  def remove_unpublished_pages
-    Alchemy::PgSearch::Search.remove_page self unless searchable?
-  end
-
   def searchable?
     public? && !layoutpage?
+  end
+
+  private
+
+  def remove_unpublished_page
+    Alchemy::PgSearch::Search.remove_page self unless searchable?
   end
 end
 

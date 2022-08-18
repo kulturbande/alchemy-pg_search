@@ -28,4 +28,24 @@ RSpec.describe Alchemy::Page do
       end
     end
   end
+
+  describe "after save" do
+    before do
+      PgSearch::Document.create(page_id: page.id, content: "foo")
+    end
+
+    it "should not remove the document, if the page is searchable" do
+      page.save
+      expect(PgSearch::Document.count).to eq(1)
+    end
+
+    describe "unpublished page" do
+      let(:page) { create(:alchemy_page) }
+
+      it "should remove the document, if the page is not searchable" do
+        page.save
+        expect(PgSearch::Document.count).to eq(0)
+      end
+    end
+  end
 end
