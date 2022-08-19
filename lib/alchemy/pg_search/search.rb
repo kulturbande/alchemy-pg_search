@@ -37,6 +37,8 @@ module Alchemy
       # search for page results
       #
       # @param query [string]
+      # @param ability [nil|CanCan::Ability]
+      # @return [ActiveRecord::Relation]
       def self.search(query, ability: nil)
         query = ::PgSearch.multisearch(query)
                   .select("JSON_AGG(content) as content", :page_id)

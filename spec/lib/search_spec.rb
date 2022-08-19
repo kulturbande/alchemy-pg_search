@@ -10,6 +10,8 @@ describe Alchemy::PgSearch::Search do
       essence.save
     end
   end
+  let(:first_page) { Alchemy::Page.first }
+  let(:second_page) { Alchemy::Page.last }
 
   context 'rebuild' do
     it 'should have zero indexed documents' do
@@ -40,9 +42,38 @@ describe Alchemy::PgSearch::Search do
     end
   end
 
+  context 'remove_page' do
+    before do
+      prepared_essences
+      Alchemy::PgSearch::Search.rebuild
+    end
+
+    context 'remove first page' do
+      before { Alchemy::PgSearch::Search.remove_page first_page }
+
+      it 'should have only one page and relative essences (1 Page + 3 Essences)' do
+        expect(PgSearch::Document.count).to eq(4)
+      end
+
+      it 'should have one page entry' do
+        expect(PgSearch::Document.where(searchable_type: "Alchemy::Page").count).to eq(1)
+      end
+    end
+
+    context 'remove second page' do
+      before { Alchemy::PgSearch::Search.remove_page second_page }
+
+      it 'should have only one page (1 Page)' do
+        expect(PgSearch::Document.count).to eq(1)
+      end
+
+      it 'should have one page entry' do
+        expect(PgSearch::Document.where(searchable_type: "Alchemy::Page").count).to eq(1)
+      end
+    end
+  end
+
   context 'index_page' do
-    let(:first_page) { Alchemy::Page.first }
-    let(:second_page) { Alchemy::Page.last }
 
     before do
       prepared_essences
@@ -100,6 +131,43 @@ describe Alchemy::PgSearch::Search do
       it 'should be all relate to the same page ' do
         PgSearch::Document.all.each do |document|
           expect(document.page_id).to be(second_page.id)
+        end
+      end
+    end
+  end
+
+  context 'search' do
+    let(:result) { Alchemy::PgSearch::Search.search "foo" }
+    
+    before do
+      create(:alchemy_page, :restricted, :public, name: "foo")
+      prepared_essences
+      Alchemy::PgSearch::Search.rebuild
+    end
+
+    it 'should find two pages' do
+      expect(result.length).to eq(2)
+    end
+
+    context 'ability' do
+      let(:user) { User.create(alchemy_roles: ["member"]) }
+      let(:result) { Alchemy::PgSearch::Search.search "foo", ability: Alchemy::Permissions.new(user) }
+
+      context 'with a logged in user' do
+        it 'should find two pages' do
+          expect(result.length).to eq(2)
+        end
+      end
+
+      context 'with an unknown user' do
+        let(:user) { User.create(alchemy_roles: []) }
+
+        it 'should find one page' do
+          expect(result.length).to eq(1)
+        end
+
+        it 'should find only the second page' do
+          expect(result.first.page).to eq(second_page)
         end
       end
     end
