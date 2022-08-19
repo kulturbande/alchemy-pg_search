@@ -5,7 +5,7 @@ module Alchemy
       ##
       # index all supported Alchemy models
       def self.rebuild
-        [Alchemy::Page, Alchemy::EssenceText, Alchemy::EssenceRichtext, Alchemy::EssencePicture].each do |model|
+        ([Alchemy::Page] + Alchemy::PgSearch.searchable_essence_classes).each do |model|
           ::PgSearch::Multisearch.rebuild(model)
         end
       end

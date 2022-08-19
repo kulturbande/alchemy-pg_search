@@ -7,7 +7,7 @@ module Alchemy
       engine_name "alchemy_pg_search"
 
       config.to_prepare do
-        Dir.glob(Alchemy::PgSearch::Engine.root.join("app", "extensions", "*_extension.rb")) do |c|
+        Dir.glob(Alchemy::PgSearch::Engine.root.join("app", "extensions", "**", "*_extension.rb")) do |c|
           require_dependency(c)
         end
 
