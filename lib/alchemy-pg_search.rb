@@ -17,7 +17,7 @@ module Alchemy
     end
     
     def self.search(query, ability: nil)
-      Search.search query, ability: ability
+      Search.search(query, ability: ability)
     end
 
     def self.rebuild
