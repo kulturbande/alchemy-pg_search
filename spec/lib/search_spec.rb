@@ -10,6 +10,11 @@ describe Alchemy::PgSearch::Search do
       essence.save
     end
   end
+  let(:prepared_ingredients) do
+    Alchemy::PgSearch::SEARCHABLE_INGREDIENTS.each do |ingredient_type|
+      create(:"alchemy_ingredient_#{ingredient_type.downcase}", value: "foo", element: element)
+    end
+  end
   let(:first_page) { Alchemy::Page.first }
   let(:second_page) { Alchemy::Page.last }
 
@@ -21,23 +26,22 @@ describe Alchemy::PgSearch::Search do
     context 'after rebuild' do
       before do
         prepared_essences
+        prepared_ingredients
         Alchemy::PgSearch::Search.rebuild
       end
 
-      it 'should have entries (2 Pages + 3 Essences)' do
-        expect(PgSearch::Document.count).to eq(5)
+      it 'should have entries (2 Pages + 3 Essences + 3 Ingredients)' do
+        expect(PgSearch::Document.count).to eq(8)
       end
 
-      it 'should have one essence_text entry' do
-        expect(PgSearch::Document.where(searchable_type: "Alchemy::EssenceText").count).to eq(1)
+      ["Alchemy::EssenceText", "Alchemy::EssenceRichtext", "Alchemy::EssencePicture"].each do |model|
+        it "should have a #{model}" do
+          expect(PgSearch::Document.where(searchable_type: model).count).to eq(1)
+        end
       end
 
-      it 'should have one essence_richtext entry' do
-        expect(PgSearch::Document.where(searchable_type: "Alchemy::EssenceRichtext").count).to eq(1)
-      end
-
-      it 'should have one essence_picture entry' do
-        expect(PgSearch::Document.where(searchable_type: "Alchemy::EssencePicture").count).to eq(1)
+      it "should have three ingredients" do
+        expect(PgSearch::Document.where(searchable_type: "Alchemy::Ingredient").count).to eq(3)
       end
     end
   end
