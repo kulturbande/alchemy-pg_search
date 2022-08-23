@@ -10,7 +10,7 @@ module Alchemy
     extend Config
 
     def self.is_searchable_essence?(essence_type)
-      SEARCHABLE_ESSENCES.include?(essence_type)
+      SEARCHABLE_ESSENCES.include?(essence_type.gsub("Alchemy::", ""))
     end
 
     def self.is_searchable_ingredient?(ingredient_type)

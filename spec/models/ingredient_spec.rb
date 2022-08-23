@@ -8,12 +8,7 @@ describe Alchemy::Ingredient do
 
   Alchemy::PgSearch::SEARCHABLE_INGREDIENTS.each do |ingredient_type|
     context ingredient_type do
-      let(:ingredient) do
-        ingredient = create(:"alchemy_ingredient_#{ingredient_type.downcase}")
-        ingredient.element = element
-        ingredient.value = "foo"
-        ingredient
-      end
+      let(:ingredient) { create(:"alchemy_ingredient_#{ingredient_type.downcase}", value: "foo", element: element) }
 
       context "searchable?" do
         context "element and ingredient are searchable" do
@@ -44,20 +39,43 @@ describe Alchemy::Ingredient do
           end
         end
       end
+
+      context "index" do
+        let(:document) { PgSearch::Document.first }
+        before do
+          ingredient
+          ::PgSearch::Multisearch.rebuild Alchemy::Ingredient
+        end
+
+        it "should have one entry" do
+          expect(PgSearch::Document.all.length).to eq(1)
+        end
+
+        it "should be the current ingredient" do
+          expect(document.searchable).to eq(ingredient)
+        end
+      end
     end
   end
 
   context "not supported ingredient type" do
-    let(:ingredient) do
-      ingredient = create(:"alchemy_ingredient_boolean")
-      ingredient.element = element
-      ingredient.value = true
-      ingredient
-    end
+    let(:ingredient) { create(:"alchemy_ingredient_boolean", value: true, element: element) }
 
     context "searchable?" do
       it "should be not searchable" do
         expect(ingredient.searchable?).to be(false)
+      end
+    end
+
+    context "index" do
+      let(:document) { PgSearch::Document.first }
+      before do
+        ingredient
+        ::PgSearch::Multisearch.rebuild Alchemy::Ingredient
+      end
+
+      it "should have no entries" do
+        expect(PgSearch::Document.all.length).to eq(0)
       end
     end
   end
