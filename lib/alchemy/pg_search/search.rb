@@ -28,7 +28,11 @@ module Alchemy
         page.update_pg_search_document
         page.all_elements.includes(contents: :essence).each do |element|
           element.contents.each do |content|
-            content.essence.update_pg_search_document if Alchemy::PgSearch.is_searchable_essence? content.essence_type
+            content.essence.update_pg_search_document if Alchemy::PgSearch.is_searchable_essence?(content.essence_type)
+          end
+
+          element.ingredients.each do |ingredient|
+            ingredient.update_pg_search_document if Alchemy::PgSearch.is_searchable_ingredient?(ingredient.type)
           end
         end
       end

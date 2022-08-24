@@ -49,14 +49,15 @@ describe Alchemy::PgSearch::Search do
   context 'remove_page' do
     before do
       prepared_essences
+      prepared_ingredients
       Alchemy::PgSearch::Search.rebuild
     end
 
     context 'remove first page' do
       before { Alchemy::PgSearch::Search.remove_page first_page }
 
-      it 'should have only one page and relative essences (1 Page + 3 Essences)' do
-        expect(PgSearch::Document.count).to eq(4)
+      it 'should have only one page and relative essences/ingredients (1 Page + 3 Essences + 3 Ingredients)' do
+        expect(PgSearch::Document.count).to eq(7)
       end
 
       it 'should have one page entry' do
@@ -81,6 +82,7 @@ describe Alchemy::PgSearch::Search do
 
     before do
       prepared_essences
+      prepared_ingredients
       PgSearch::Document.destroy_all # clean the whole index
     end
 
@@ -107,8 +109,8 @@ describe Alchemy::PgSearch::Search do
         Alchemy::PgSearch::Search.index_page second_page
       end
 
-      it 'should have four entries (1 Page + 3 Essences)' do
-        expect(PgSearch::Document.count).to be(4)
+      it 'should have four entries (1 Page + 3 Essences + 3 Ingredients)' do
+        expect(PgSearch::Document.count).to be(7)
       end
 
       it 'should be all relate to the same page ' do
@@ -127,9 +129,9 @@ describe Alchemy::PgSearch::Search do
       end
 
       it 'should have 6 documents' do
-        # 1 Page + 3 previous essences + 2 new article essences
+        # 1 Page + 3 previous essences + 3 previous ingredients + 2 new article essences
         # the picture essence is empty and not in the search index
-        expect(PgSearch::Document.count).to be(6)
+        expect(PgSearch::Document.count).to be(9)
       end
 
       it 'should be all relate to the same page ' do
