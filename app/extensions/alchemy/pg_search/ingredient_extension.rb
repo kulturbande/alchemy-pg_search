@@ -11,7 +11,7 @@ module Alchemy::PgSearch::IngredientExtension
   end
 
   def searchable?
-    value.present? && Alchemy::PgSearch.is_searchable_ingredient?(type) && !!element&.searchable?
+    value.present? && Alchemy::PgSearch.is_searchable?(type) && !!element&.searchable?
   end
 end
 
