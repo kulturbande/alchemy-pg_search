@@ -26,7 +26,7 @@ module Alchemy
         remove_page page
 
         page.update_pg_search_document
-        page.all_elements.includes(contents: :essence).each do |element|
+        page.all_elements.includes(:ingredients, contents: :essence).find_each do |element|
           element.contents.each do |content|
             content.essence.update_pg_search_document if Alchemy::PgSearch.is_searchable?(content.essence_type)
           end
